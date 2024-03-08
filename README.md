@@ -12,7 +12,7 @@ This demo workflow executes the `bedtools intersect` command on the provided VCF
 - `output_vcf`: Output VCF file containing variants within the specified region.
 - `count`: Number of variants in the output VCF file.
 
-Workflow Execution
+## Execution
 The BedtoolsDemo workflow calls the intersect task with the provided inputs. 
 The intersect task, in turn, runs the bedtools intersect command within a Docker container (pegi3s/bedtools). 
 The resulting VCF file and variant count are then captured and reported as outputs.
