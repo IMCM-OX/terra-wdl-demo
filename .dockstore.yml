@@ -2,7 +2,8 @@ version: 1.2
 workflows:
   - subclass: WDL
     primaryDescriptorPath: /workflows/main.wdl
+    testParameterFiles: empty.json
     readMePath: /README.md
     authors:
       - name: Anand Maurya
-        email: anand.maurya@well.ox.ac.uk
+        email: anand.maurya@well.ox.ac.uk     
