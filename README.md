@@ -24,19 +24,49 @@ The resulting VCF file and variant count are then captured and reported as outpu
 - `count`: Number of variants in the output VCF file.
 
 ## Understanding the WDL Script
+
 Every WDL file must begin with a version statement.
+
 In our example, we are declaring `version 1.0` at the top of the `main.wdl` script.
 
 ### Task section (eg `intersect`)
 A task is defined using the `task` keyword, followed by a task name that is unique within its WDL document.
 
+A workflow can contain the following components:
+- `input` section
+- `output` section
+- `command` section
+- `runtime` section
+
+Optional components
+- `meta` section
+- `parameter_meta` section
+
+Here is the structure of a simple task:
+
 ```{bash}
-task intersect {
-    # declaration of a task
+# declaration of a task
+task task_name {
+    input {
+
+    }
+    command <<<
+
+    >>>
+    output {
+
+    }
+    runtime {
+
+    }
 }
 ```
+
+The detailed description of the components of our `intersect` task is provided below.
+
 #### `input`: Specifies the input files and parameters required for the task (vcf, bed, prefix).
 ```{bash}
+# declaration of the task
 task intersect {
     input {
         File vcf
@@ -81,16 +111,46 @@ Optionally, we can add `meta` and `parameter_section` with additional metadata.
 
 ### Workflow section (eg `Bedtools`)
   
-  A workflow is defined using the workflow keyword, followed by a workflow name that is unique within its WDL document, followed by any number of workflow elements within braces.
-  ```{bash}
-  workflow Bedtools {
-    # declaration of a workflow
-  }
-  ```
+A workflow is defined using the `workflow` keyword, followed by a workflow name that is unique within its WDL file, followed by the components of the workflow within braces.
+
+A workflow can contain the following components:
+- `input` section
+- `output` section
+- `call` section
+
+Optional components
+- `meta` section
+- `parameter_meta` section
+
+
+Here is the structure of a simple workflow that involves running two tasks.
+
+```{bash}
+# declaration of a workflow
+workflow workflow_name {
+    input {
+
+    }
+
+    call task_name_1 {
+
+    }
+
+    call task_name_2 {
+
+    }
+
+    output {
+
+    }
+}
+```
+
+The detailed description of the components of our `Bedtools` workflow is provided below.
 
 #### `input`: Defines the input files required for the workflow (query_vcf, query_bed, label).
 ```{bash}
-workflow name {
+workflow Bedtools {
     input {
         File query_vcf
         File query_bed
@@ -121,8 +181,102 @@ workflow name {
   }
   ```
 
+#### Metadata Sections (optional)
+User can also add meta and parameter_meta sections to both workflow and tasks.
+- `meta` : task or workflow level metadata. For example: description, author and contact email, etc.
+- `parameter_meta`: This section contains metadata specific to input and output parameters.
+Any key in this section must correspond to a task input or output.
 
 
+#### Complete workflow script (`workflow/main.wdl`)
+```{bash}
+version 1.0
+
+############################ Workflow definition begins here ############################
+workflow Bedtools {
+
+    meta {
+        description: "A simple wdl workflow extract variants from a vcf using a region of interest (bed)"
+    }
+
+    # Declare all the inputs required for the workflow
+    input {
+        File query_vcf
+        File query_bed
+        String label
+    }
+
+    # Metadata specific to the workflow input parameters
+    parameter_meta {
+
+        query_vcf:{
+            help:"Input VCF file.",
+            example: "test_data/sample.vcf"
+        }
+        
+        query_bed:{
+            help:"Coordinates for the regions of interest in .bed format.",
+            example: "test_data/region_of_interest.bed"
+        }
+        
+        label:{
+            help:"Output file prefix.",
+            example: "demo"
+        }
+    }
+
+    # Calling the 'intersect' task with specified inputs
+    call intersect {
+        input:
+            vcf = query_vcf,
+            bed = query_bed,
+            prefix = label
+    }
+
+    # Output declarations for the workflow.
+    # Catching the outputs of the 'intersect' task and assigning them to `output_vcf` and `count`.
+    output {
+        File output_vcf = intersect.out
+        Int count = intersect.count
+    }
+
+}
+
+############################ Task definition begins here ############################
+task intersect {
+    
+    # Declare all the task-level inputs required to run the shell command
+    input {
+        File vcf
+        File bed
+        String prefix
+    }
+
+    # Shell commands to be executed by the task
+    # Use 'bedtools intersect' to filter variants based on the provided BED file.
+    # Use 'grep' to filter out header lines and count the remaining variants from the resultant file.
+    command <<<
+        bedtools intersect -a ~{vcf} -b ~{bed} -header > ~{prefix}.vcf
+        grep -v "#" ~{prefix}.vcf |wc -l
+    >>>
+
+    # Output declarations for the task.
+    # Catching the ".vcf" file created by "bedtools" and the "stdout" of the grep command and assigning them to "out" and "count" respectively.
+    output {
+        File out = prefix + ".vcf"
+        Int count = read_int(stdout())
+    }
+
+    # Runtime specifications for the task
+    runtime {
+        docker: "pegi3s/bedtools"
+        memory: "4G"
+        disks: "local-disk 1 HDD"
+    }
+
+}
+
+```
 
 ## Further reading
 - [WDL 1.0 style guidelines:](https://biowdl.github.io/styleGuidelines.html)
