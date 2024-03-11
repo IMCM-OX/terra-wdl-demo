@@ -1,33 +1,20 @@
 version 1.0
 
-# Workflow definition
+############################ Workflow definition begins here ############################
 workflow Bedtools {
 
+    meta {
+        description: "A simple wdl workflow extract variants from a vcf using a region of interest (bed)"
+    }
+
+    # Declare all the inputs required for the workflow
     input {
         File query_vcf
         File query_bed
         String label
     }
 
-    # Calling the 'intersect' task with specified inputs
-    call intersect {
-        input:
-            vcf = query_vcf,
-            bed = query_bed,
-            prefix = label
-    }
-
-    # Output declarations for the workflow. Catching the outputs of the 'intersect' task and assigning them to `output_vcf` and `count`.
-    output {
-        File output_vcf = intersect.out
-        Int count = intersect.count
-    }
-
-    meta {
-        description: "A simple wdl workflow extract variants from a vcf using a region of interest (bed)"
-    }
-    
-    # Metadata specific to the workflow parameters
+    # Metadata specific to the workflow input parameters
     parameter_meta {
 
         query_vcf:{
@@ -46,11 +33,27 @@ workflow Bedtools {
         }
     }
 
+    # Calling the 'intersect' task with specified inputs
+    call intersect {
+        input:
+            vcf = query_vcf,
+            bed = query_bed,
+            prefix = label
+    }
+
+    # Output declarations for the workflow.
+    # Catching the outputs of the 'intersect' task and assigning them to `output_vcf` and `count`.
+    output {
+        File output_vcf = intersect.out
+        Int count = intersect.count
+    }
+
 }
 
-# Task definition
+############################ Task definition begins here ############################
 task intersect {
-
+    
+    # Declare all the task-level inputs required to run the shell command
     input {
         File vcf
         File bed
@@ -65,7 +68,8 @@ task intersect {
         grep -v "#" ~{prefix}.vcf |wc -l
     >>>
 
-    # Output declarations for the task. Catching the ".vcf" file created by "bedtools" and the "stdout" of the grep command and assigning them to "out" and "count" respectively.
+    # Output declarations for the task.
+    # Catching the ".vcf" file created by "bedtools" and the "stdout" of the grep command and assigning them to "out" and "count" respectively.
     output {
         File out = prefix + ".vcf"
         Int count = read_int(stdout())
