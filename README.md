@@ -48,16 +48,19 @@ Here is the structure of a simple task:
 # declaration of a task
 task task_name {
     input {
-
+        # input declaration
     }
+    
     command <<<
-
+    # bash/python/perl/R command
     >>>
+    
     output {
-
+        # declare the outputs of the task
     }
+    
     runtime {
-
+        # declare computing requirements required to run the task
     }
 }
 ```
@@ -128,20 +131,21 @@ Here is the structure of a simple workflow that involves running two tasks.
 ```{bash}
 # declaration of a workflow
 workflow workflow_name {
-    input {
 
+    input {
+        # input declaration
     }
 
     call task_name_1 {
-
+        # execute the first task
     }
 
     call task_name_2 {
-
+        # execute the second task
     }
 
     output {
-
+        # declare the outputs of the workflow
     }
 }
 ```
