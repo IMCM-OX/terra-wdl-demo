@@ -5,6 +5,27 @@
 > [!TIP]
 > To import the workflow into your Terra workspace, click on the above Dockstore badge, and select 'Terra' from the 'Launch with' widget on the Dockstore workflow page.
 
+# Table of Contents
+
+1. [About](#about)
+2. [Workflow Steps](#workflow-steps)
+3. [Inputs](#inputs)
+4. [Outputs](#outputs)
+5. [Understanding the WDL Script](#understanding-the-wdl-script)
+   - [Task Section (e.g., intersect)](#task-section-eg-intersect)
+     - [`input`](#input)
+     - [`command`](#command)
+     - [`output`](#output)
+     - [`runtime`](#runtime)
+   - [Workflow Section (e.g., Bedtools)](#workflow-section-eg-bedtools)
+     - [`input`](#input-1)
+     - [`call` intersect](#call-intersect)
+     - [`output`](#output-1)
+     - [Metadata Sections (optional)](#metadata-sections-optional)
+     - [Complete Workflow Script (`workflow/main.wdl`)](#complete-workflow-script-workflowmainwdl)
+6. [Further Reading](#further-reading)
+
+
 ## About
 This is a workflow that extracts variants from a VCF (Variant Call Format) file using a region of interest specified in a BED file.
 This demo workflow executes the `bedtools intersect` command on the provided VCF and BED files, producing a filtered VCF file based on the intersection, along with a count of variants.
@@ -67,7 +88,10 @@ task task_name {
 
 The detailed description of the components of our `intersect` task is provided below.
 
-#### `input`: Specifies the input files and parameters required for the task (vcf, bed, prefix).
+#### `input`
+
+Specifies the input files and parameters required for the task (vcf, bed, prefix).
+
 ```{bash}
 # declaration of the task
 task intersect {
@@ -78,7 +102,11 @@ task intersect {
     }
 }
 ```
-#### `command`: Contains the shell commands executed by the task. It uses `bedtools intersect` to extract variants and grep to count non-header lines.
+
+#### `command`
+
+Contains the shell commands executed by the task. It uses `bedtools intersect` to extract variants and grep to count non-header lines.
+
 ```{bash}
 task intersect {
     ...
@@ -88,7 +116,11 @@ task intersect {
     >>>
 }
 ```
-#### `output`: Defines the output files and variables produced by the task (`out`, `count`).
+
+#### `output`
+
+Defines the output files and variables produced by the task (`out`, `count`).
+
 ```{bash}
 task intersect {
     ...
@@ -98,7 +130,11 @@ task intersect {
     }
 }
 ```
-#### `runtime`: Specifies the runtime environment, including `docker` image, `memory` allocation, and `disk` requirements.
+
+#### `runtime`
+
+Specifies the runtime environment, including `docker` image, `memory` allocation, and `disk` requirements.
+
 ```{bash}
 task intersect {
     ...
@@ -152,7 +188,10 @@ workflow workflow_name {
 
 The detailed description of the components of our `Bedtools` workflow is provided below.
 
-#### `input`: Defines the input files required for the workflow (query_vcf, query_bed, label).
+#### `input`
+
+Defines the input files required for the workflow (query_vcf, query_bed, label).
+
 ```{bash}
 workflow Bedtools {
     input {
@@ -162,7 +201,11 @@ workflow Bedtools {
     }
 }
 ```
-#### `call` intersect: Invokes the intersect task with specified inputs.
+
+#### `call` intersect
+
+Invokes the intersect task with specified inputs.
+
   ```{bash}
   workflow Bedtools {
     ...
@@ -174,7 +217,11 @@ workflow Bedtools {
     }
   }
   ```
-#### `output`: Specifies the output files of the workflow (output_vcf, count).
+
+#### `output`
+
+Specifies the output files of the workflow (output_vcf, count).
+
   ```{bash}
   workflow Bedtools {   
     ...     
@@ -186,6 +233,7 @@ workflow Bedtools {
   ```
 
 #### Metadata Sections (optional)
+
 User can also add meta and parameter_meta sections to both workflow and tasks.
 - `meta` : task or workflow level metadata. For example: description, author and contact email, etc.
 - `parameter_meta`: This section contains metadata specific to input and output parameters.
@@ -193,6 +241,7 @@ Any key in this section must correspond to a task input or output.
 
 
 #### Complete workflow script (`workflow/main.wdl`)
+
 ```{bash}
 version 1.0
 
