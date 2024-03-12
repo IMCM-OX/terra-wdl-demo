@@ -31,9 +31,9 @@ This is a workflow that extracts variants from a VCF (Variant Call Format) file 
 This demo workflow executes the `bedtools intersect` command on the provided VCF and BED files, producing a filtered VCF file based on the intersection, along with a count of variants.
 
 ## Workflow steps
-The `BedtoolsDemo` workflow calls the `intersect` task with the provided inputs. 
-The `intersect` task, runs the `bedtools intersect` command.
-The resulting VCF file and variant count are then captured and reported as outputs.
+1. The `BedtoolsDemo` workflow calls the `intersect` task with the provided inputs. 
+1. The `intersect` task, runs the `bedtools intersect` command.
+1. The resulting VCF file and variant count are then captured and reported as outputs.
 
 ## Inputs
 - `query_vcf`: Input VCF file containing variants.
