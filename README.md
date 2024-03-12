@@ -65,7 +65,7 @@ Optional components
 
 Here is the structure of a simple task:
 
-```{bash}
+```bash
 # declaration of a task
 task task_name {
     input {
@@ -92,7 +92,7 @@ The detailed description of the components of our `intersect` task is provided b
 
 Specifies the input files and parameters required for the task (vcf, bed, prefix).
 
-```{bash}
+```bash
 # declaration of the task
 task intersect {
     input {
@@ -107,7 +107,7 @@ task intersect {
 
 Contains the shell commands executed by the task. It uses `bedtools intersect` to extract variants and grep to count non-header lines.
 
-```{bash}
+```bash
 task intersect {
     ...
     command <<<
@@ -121,7 +121,7 @@ task intersect {
 
 Defines the output files and variables produced by the task (`out`, `count`).
 
-```{bash}
+```bash
 task intersect {
     ...
     output {
@@ -135,7 +135,7 @@ task intersect {
 
 Specifies the runtime environment, including `docker` image, `memory` allocation, and `disk` requirements.
 
-```{bash}
+```bash
 task intersect {
     ...
     runtime {
@@ -164,7 +164,7 @@ Optional components
 
 Here is the structure of a simple workflow that involves running two tasks.
 
-```{bash}
+```bash
 # declaration of a workflow
 workflow workflow_name {
 
@@ -192,7 +192,7 @@ The detailed description of the components of our `Bedtools` workflow is provide
 
 Defines the input files required for the workflow (query_vcf, query_bed, label).
 
-```{bash}
+```bash
 workflow Bedtools {
     input {
         File query_vcf
@@ -206,8 +206,8 @@ workflow Bedtools {
 
 Invokes the intersect task with specified inputs.
 
-  ```{bash}
-  workflow Bedtools {
+```bash
+workflow Bedtools {
     ...
     call intersect {
         input:
@@ -215,22 +215,22 @@ Invokes the intersect task with specified inputs.
             bed = query_bed,
             prefix = label
     }
-  }
-  ```
+}
+```
 
 #### `output`
 
 Specifies the output files of the workflow (output_vcf, count).
 
-  ```{bash}
-  workflow Bedtools {   
+```bash
+workflow Bedtools {   
     ...     
     output {
         File output_vcf = intersect.out
         Int count = intersect.count
     }
-  }
-  ```
+}
+```
 
 #### Metadata Sections (optional)
 
@@ -242,7 +242,7 @@ Any key in this section must correspond to a task input or output.
 
 #### Complete workflow script (`workflow/main.wdl`)
 
-```{bash}
+```bash
 version 1.0
 
 ############################ Workflow definition begins here ############################
