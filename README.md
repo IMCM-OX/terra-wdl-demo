@@ -112,7 +112,7 @@ task intersect {
     ...
     command <<<
         bedtools intersect -a ~{vcf} -b ~{bed} -header > ~{prefix}_subset.vcf
-        grep -v "#" ~{prefix}.vcf |wc -l
+        grep -v "#" ~{prefix}_subset.vcf |wc -l
     >>>
 }
 ```
@@ -125,7 +125,7 @@ Defines the output files and variables produced by the task (`out`, `count`).
 task intersect {
     ...
     output {
-        File out = prefix + ".vcf"
+        File out = prefix + "_subset.vcf"
         Int count = read_int(stdout())
     }
 }
@@ -264,7 +264,7 @@ workflow Bedtools {
 
         query_vcf:{
             help:"Input VCF file.",
-            example: "test_data/sample.vcf"
+            example: "test_data/NA00001.vcf"
         }
         
         query_bed:{
@@ -310,13 +310,13 @@ task intersect {
     # Use 'grep' to filter out header lines and count the remaining variants from the resultant file.
     command <<<
         bedtools intersect -a ~{vcf} -b ~{bed} -header > ~{prefix}_subset.vcf
-        grep -v "#" ~{prefix}.vcf |wc -l
+        grep -v "#" ~{prefix}_subset.vcf |wc -l
     >>>
 
     # Output declarations for the task.
     # Catching the ".vcf" file created by "bedtools" and the "stdout" of the grep command and assigning them to "out" and "count" respectively.
     output {
-        File out = prefix + ".vcf"
+        File out = prefix + "_subset.vcf"
         Int count = read_int(stdout())
     }
 
