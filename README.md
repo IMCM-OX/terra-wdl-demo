@@ -135,6 +135,9 @@ task intersect {
 
 Specifies the runtime environment, including `docker` image, `memory` allocation, and `disk` requirements.
 
+We are going to use the a `bedtools` container from the [Bioinformatics Docker Images Project](https://pegi3s.github.io/dockerfiles/) maintained by the Phenotypic Evolution Group (pegi3s) at the Instituto de Biologia Molecular e Celular (IBMC) / Instituto de Investigação e Inovação em Saúde da Universidade do Porto (i3S).
+
+
 ```bash
 task intersect {
     ...
