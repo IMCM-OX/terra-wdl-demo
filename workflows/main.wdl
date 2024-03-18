@@ -14,7 +14,7 @@ task intersect {
     # Use 'bedtools intersect' to filter variants based on the provided BED file.
     # Use 'grep' to filter out header lines and count the remaining variants from the resultant file.
     command <<<
-        bedtools intersect -a ~{vcf} -b ~{bed} -header > ~{prefix}.vcf
+        bedtools intersect -a ~{vcf} -b ~{bed} -header > ~{prefix}_subset.vcf
         grep -v "#" ~{prefix}.vcf |wc -l
     >>>
 
